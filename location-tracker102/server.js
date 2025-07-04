@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, mongoose.connect("mongodb+srv://pubgmobilemercury:<Anirbanr117@>@location-data.1fo2mez.mongodb.net/?retryWrites=true&w=majority&appName=Location-data",   
+mongoose.connect(process.env.MONGODB_URI, mongoose.connect("mongodb+srv://pubgmobilemercury:<Anirbanr117@>@location-data.1fo2mez.mongodb.net/?retryWrites=true&w=majority&appName=Location-data", {  
  {
   useNewUrlParser: true,
   useUnifiedTopology: true
