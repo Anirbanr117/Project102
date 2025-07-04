@@ -1,3 +1,4 @@
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -15,12 +16,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, mongoose.connect("mongodb+srv://pubgmobilemercury:<Anirbanr117@>@location-data.1fo2mez.mongodb.net/?retryWrites=true&w=majority&appName=Location-data", { 
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://username:password@location-data.1fo2mez.mongodb.net/?retryWrites=true&w=majority&appName=Location-data", { 
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => console.log("MongoDB connected"))
-  .catch(err => console.error("MongoDB error:", err));
-
+})
+.then(() => console.log("MongoDB connected"))
+.catch(err => console.error("MongoDB error:", err)); 
 // Schema
 const locationSchema = new mongoose.Schema({
   latitude: Number,
@@ -32,7 +33,7 @@ const Location = mongoose.model("Location", locationSchema);
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // API: Save location
