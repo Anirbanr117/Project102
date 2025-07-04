@@ -1,66 +1,29 @@
 
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
-import bodyParser from 'body-parser';
+import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import bodyParser from 'body-parser';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://username:password@location-data.1fo2mez.mongodb.net/?retryWrites=true&w=majority&appName=Location-data", { 
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log("MongoDB connected"))
-.catch(err => console.error("MongoDB error:", err)); 
-// Schema
-const locationSchema = new mongoose.Schema({
-  latitude: Number,
-  longitude: Number,
-  timestamp: String,
-  address: Object
-});
-const Location = mongoose.model("Location", locationSchema);
-
-// Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
+app.use(express.static("public")); // Serve frontend
 
-// API: Save location
-app.post("/api/save-location", async (req, res) => {
-  try {
-    const location = new Location(req.body);
-    await location.save();
-    res.json({ message: "Saved" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error saving" });
-  }
-});
+app.post("/api/save-location", (req, res) => {
+  const { latitude, longitude, timestamp, address } = req.body;
+  const entry = { latitude, longitude, timestamp, address };
 
-// API: Get all locations
-app.get("/api/locations", async (req, res) => {
-  try {
-    const locations = await Location.find().sort({ timestamp: -1 });
-    res.json(locations);
-  } catch (err) {
-    res.status(500).json({ error: "Error fetching" });
-  }
-});
-
-// Serve dashboard
-app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
+  fs.appendFile("locations.json", JSON.stringify(entry) + ",\n", (err) => {
+    if (err) {
+      console.error("Error saving location:", err);
+      return res.status(500).json({ message: "Error saving location" });
+    }
+    console.log("Location saved:", entry);
+    res.json({ message: "Location saved successfully" });
+  });
 });
 
 app.listen(PORT, () => {
