@@ -18,7 +18,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // 🌐 MongoDB Connection
-mongoose.connect("mongodb+srv://pubgmobilemercury:<Anirbanr117@>@location-data.1fo2mez.mongodb.net/?retryWrites=true&w=majority&appName=Location-data", {
+mongoose.connect(process.env.MONGODB_URI, "mongodb+srv://pubgmobilemercury:<Anirbanr117@>@location-data.1fo2mez.mongodb.net/?retryWrites=true&w=majority&appName=Location-data", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log("MongoDB connected"))
